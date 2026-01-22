@@ -47,5 +47,6 @@
     </p>
 
     <a href="about.jsp">About Cloud</a>
+    <a href="contact.jsp">Contact Cloud</a>
 </body>
 </html>

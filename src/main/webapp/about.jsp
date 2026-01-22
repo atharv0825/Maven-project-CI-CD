@@ -48,5 +48,6 @@
     </p>
 
     <a href="index.jsp">Back to Home</a>
+    <a href="contact.jsp">Contact Cloud</a>
 </body>
 </html>

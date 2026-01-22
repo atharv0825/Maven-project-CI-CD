@@ -13,7 +13,7 @@ pipeline {
 
     stages {
 
-        stage('Checkout Code') {
+        stage('Checkout') {
             steps {
                 checkout scm
             }
@@ -27,14 +27,19 @@ pipeline {
 
         stage('Deploy to Tomcat') {
             steps {
-                deploy adapters: [
-                    tomcat9(
+                withCredentials([
+                    usernamePassword(
                         credentialsId: 'tomcat-jenkins',
-                        url: "${TOMCAT_URL}"
+                        usernameVariable: 'TC_USER',
+                        passwordVariable: 'TC_PASS'
                     )
-                ],
-                contextPath: "${APP_NAME}",
-                war: "target/${APP_NAME}.war"
+                ]) {
+                    sh """
+                    curl -u $TC_USER:$TC_PASS \
+                         -T target/${APP_NAME}.war \
+                         ${TOMCAT_URL}/manager/text/deploy?path=/${APP_NAME}&update=true
+                    """
+                }
             }
         }
     }
@@ -44,7 +49,7 @@ pipeline {
             echo "Deployment successful: ${TOMCAT_URL}/${APP_NAME}/"
         }
         failure {
-            echo "Deployment failed. Check logs."
+            echo "Deployment failed"
         }
     }
 }
